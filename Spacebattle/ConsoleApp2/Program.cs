@@ -1,4 +1,7 @@
-﻿using System.Runtime.InteropServices;
+﻿using System.Diagnostics;
+using System.Reflection;
+using System.Runtime.InteropServices;
+using System.Collections.Concurrent;
 
 namespace ConsoleApp2
 {
@@ -6,31 +9,23 @@ namespace ConsoleApp2
     {
         static void Main(string[] args)
         {
-            IEnumerable<SpaceObject> listSpaceObject = new List<SpaceObject>()
+            ConcurrentList<object> concurrentList = new ConcurrentList<Object>()
+            var path = @"C:\work\OTUS_new\Spacebattle\ConsoleApp3\bin\Debug\net8.0\ConsoleApp3.dll";
+            var assembly = Assembly.LoadFrom(path);
+            var types = assembly.GetTypes();
+            foreach(var type in types)
             {
-                new SpaceShipClass(0, 1),
-                new SpaceShipClass(1, 1),
-                new SpaceShipClass(2, 2),
-                new SpaceShipClass(3, 2)
-            };
-            var spaceships = listSpaceObject.Spaceships(1);
-            var spaceship = listSpaceObject.Spaceship(2);
-            var objectIsMovable = listSpaceObject.Movable();
-        }
+                if (type.GetInterfaces().Any(i => i.Name == "IPlugin"))
+                {
+                    var instance = Activator.CreateInstance(type);
 
-        static IEnumerable<SpaceObject> Spaceships(this IEnumerable<SpaceObject> spaceObject, int idPlayer)
-        {
-            return spaceObject.Where(so => so.IdPlayer == idPlayer && so.SpaceObjectType == SpaceObjectTypeEnum.Spaceship);
-        }
+                    AddInSequesnce();
+                    var load = type.GetMethod("Load");
+                    load.Invoke(instance, Array.Empty<object>());
 
-        static SpaceObject Spaceship(this IEnumerable<SpaceObject> spaceObject, int id)
-        {
-            return spaceObject.First(so => so.Id == id);
-        }
-
-        static IEnumerable<SpaceObject> Movable(this IEnumerable<SpaceObject> spaceObject)
-        {
-            return spaceObject.Where(so => so.Movable);
+                    
+                }
+            }
         }
 
     }
