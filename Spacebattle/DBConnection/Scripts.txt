@@ -1,0 +1,42 @@
+CREATE DATABASE Avito;
+
+-- Создание таблицы "users" с первичным ключом "user_id"
+CREATE TABLE users (
+    user_id SERIAL PRIMARY KEY,
+    username VARCHAR(50) NOT NULL,
+    email VARCHAR(100) NOT NULL
+);
+
+-- Создание таблицы "posts" с первичным ключом "post_id" и внешним ключом "user_id" связанным с таблицей "users"
+CREATE TABLE posts (
+    post_id SERIAL PRIMARY KEY,
+    user_id INTEGER REFERENCES users(user_id),
+    title VARCHAR(100) NOT NULL,
+    content TEXT
+);
+
+-- Создание таблицы "comments" с первичным ключом "comment_id" и внешним ключом "post_id" связанным с таблицей "posts"
+CREATE TABLE comments (
+    comment_id SERIAL PRIMARY KEY,
+    post_id INTEGER REFERENCES posts(post_id),
+    user_id INTEGER REFERENCES users(user_id),
+    comment_text TEXT
+);
+
+INSERT INTO users (username, email) VALUES ('Test1', 'test1@example.com');
+INSERT INTO users (username, email) VALUES ('Test2', 'test2@example.com');
+INSERT INTO users (username, email) VALUES ('Test3', 'test3@example.com');
+INSERT INTO users (username, email) VALUES ('Test4', 'test4@example.com');
+INSERT INTO users (username, email) VALUES ('Test5', 'test5@example.com');
+
+INSERT INTO products (product_name, price) VALUES ('Product1', 50.00);
+INSERT INTO products (product_name, price) VALUES ('Product2', 75.00);
+INSERT INTO products (product_name, price) VALUES ('Product3', 75.00);
+INSERT INTO products (product_name, price) VALUES ('Product4', 75.00);
+INSERT INTO products (product_name, price) VALUES ('Product5', 75.00);
+
+INSERT INTO orders (user_id, total_amount) VALUES (1, 100.00);
+INSERT INTO orders (user_id, total_amount) VALUES (2, 100.00);
+INSERT INTO orders (user_id, total_amount) VALUES (3, 100.00);
+INSERT INTO orders (user_id, total_amount) VALUES (4, 100.00);
+INSERT INTO orders (user_id, total_amount) VALUES (5, 100.00);
